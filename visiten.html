@@ -220,6 +220,8 @@
         font: inherit; font-size: 16px; font-weight: 800; cursor: pointer;
       }
       .btn-agregar:active { transform: translateY(1px); }
+      .o-fecha-btn.con-fecha { border-style: solid; background: var(--gold-soft); }
+      .o-fecha-btn.falta { border-color: var(--err); outline: 3px solid rgba(179, 38, 30, 0.2); }
 
       /* ---------- Enviar ---------- */
       .enviar-zona { margin-top: 38px; }
@@ -300,8 +302,6 @@
           </div>
         </div>
       </main>
-
-      <p class="otro-form"><a href="index.html">¿Quieres pedir un orador para visitar tu congregación? Abre el formulario para visitarlos →</a></p>
 
 <!-- Calendario: se abre al tocar el campo de fecha de un orador -->
       <div class="cal-modal" id="calendario" hidden role="dialog" aria-modal="true" aria-label="Calendario para elegir la fecha de la visita">
@@ -506,13 +506,19 @@
         return c ? vClaveAFecha(c) : null;
       }
       function vSincronizarFechaTarjeta(bloque) {
-        var el = bloque.querySelector(".o-fecha-texto");
+        // La fecha elegida se muestra EN EL BOTÓN, no abajo: al tocar
+        // «Elegir la fecha» y pulsar Listo, el botón pasa a decir la
+        // fecha (por ejemplo «sábado 20 de febrero de 2027»); al
+        // tocarlo de nuevo se vuelve a abrir el calendario.
+        var btn = bloque.querySelector(".o-fecha-btn");
         var f = vFechaDeTarjeta(bloque);
         if (f) {
-          el.textContent = "Fecha: " + f.texto + ".";
-          el.classList.remove("falta");
+          btn.textContent = f.texto;
+          btn.classList.add("con-fecha");
+          btn.classList.remove("falta");
         } else {
-          el.textContent = "Sin fecha elegida.";
+          btn.textContent = "Elegir la fecha";
+          btn.classList.remove("con-fecha");
         }
       }
       function vAbrirCalendario(bloque) {
@@ -563,7 +569,6 @@
             '<span class="subtit">Fecha de la visita</span>' +
             '<button type="button" class="btn-agregar o-fecha-btn">Elegir la fecha</button>' +
             '<p class="fecha-ayuda">Toque el botón y elija el sábado de la visita en el calendario. Solo se pueden elegir los sábados libres.</p>' +
-            '<p class="fechas-resumen o-fecha-texto">Sin fecha elegida.</p>' +
           "</div>" +
           '<div class="campo">' +
             '<label class="flabel" for="vorador-discurso-' + n + '">Su discurso (número y título)</label>' +
@@ -664,7 +669,7 @@
           var d = b.querySelector(".o-discurso").value.trim();
           if (n && d) {
             hayNombreDiscurso = true;
-            if (!vFechaDeTarjeta(b)) b.querySelector(".o-fecha-texto").classList.add("falta");
+            if (!vFechaDeTarjeta(b)) b.querySelector(".o-fecha-btn").classList.add("falta");
           }
         });
         if (!oradores.length) {
