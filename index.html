@@ -74,38 +74,6 @@
       header.hero p { margin: 0; max-width: 700px; color: #c6d2e2; font-size: 16.5px; }
       header.hero p strong { color: #ffffff; }
 
-      /* ---------- Los dos botones dentro del encabezado ---------- */
-      .tabs {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-        margin-top: 22px;
-      }
-      .tab {
-        border: 2.5px solid rgba(255,255,255,0.35); border-radius: 14px;
-        background: #ffffff; color: #16233a;
-        font: inherit; text-align: left;
-        padding: 16px 18px; min-height: 96px;
-        cursor: pointer; line-height: 1.3;
-        box-shadow: 0 8px 22px rgba(0,0,0,0.28);
-      }
-      .tab .tab-titulo { display: block; font-size: 19px; font-weight: 800; line-height: 1.25; }
-      .tab .tab-desc { display: block; font-size: 14.5px; font-weight: 600; color: #46536b; margin-top: 5px; line-height: 1.4; }
-      .tab .tab-cta { display: block; font-size: 13.5px; font-weight: 800; color: var(--gold); margin-top: 9px; letter-spacing: 0.2px; }
-      .tab:active { transform: translateY(1px); }
-      .tab[aria-selected="true"] { background: #f3e7cd; border-color: var(--gold); }
-      .tab[aria-selected="true"] .tab-cta { color: #7a5c14; }
-      .tab:focus-visible { outline: 3px solid rgba(185, 138, 47, 0.65); outline-offset: 2px; }
-      @media (max-width: 620px) {
-        .tabs { grid-template-columns: 1fr; }
-        .tab { min-height: 84px; }
-      }
-      [role="tabpanel"] { scroll-margin-top: 10px; }
-      .sin-elegir {
-        margin-top: 34px; text-align: center;
-        color: var(--ink-soft); font-size: 16px; font-weight: 600;
-        background: var(--card); border-radius: var(--radius);
-        box-shadow: var(--shadow); padding: 26px 20px;
-      }
-      .sin-elegir .flecha-arriba { display: block; font-size: 26px; color: var(--gold); margin-bottom: 6px; }
 
       /* ---------- Secciones ---------- */
       section { margin-top: 38px; }
@@ -125,7 +93,6 @@
         padding: 20px;
       }
       label.flabel { display: block; font-weight: 700; font-size: 15px; margin-bottom: 6px; color: #16233a; }
-      label.flabel .opc { font-weight: 500; color: #68738a; font-size: 13.5px; }
       input[type="text"] {
         width: 100%;
         border: 1.5px solid #c3ccd9;
@@ -136,7 +103,6 @@
       }
       input[type="text"]:focus { outline: 3px solid rgba(185, 138, 47, 0.35); border-color: var(--gold); }
       input[type="file"] { width: 100%; font: inherit; font-size: 15px; color: #16233a; }
-      .o-imagen-nombre { font-weight: 700; color: #14532d; }
       input.falta { border-color: var(--err); outline: 3px solid rgba(179, 38, 30, 0.2); }
       .campo + .campo { margin-top: 16px; }
 
@@ -207,7 +173,6 @@
       }
       .btn-mini.wa { border-color: #bfe3cc; background: #eefaf2; color: #14532d; }
       fieldset { border: 0; margin: 0; padding: 0; }
-      legend, .subtit { font-weight: 800; font-size: 13px; letter-spacing: 0.6px; text-transform: uppercase; color: #68738a; margin-bottom: 8px; padding: 0; }
       .subtit { display: block; }
       .disco {
         display: flex; gap: 10px; align-items: flex-start;
@@ -299,7 +264,6 @@
         font: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer;
       }
       .fecha-ayuda { margin: 6px 0 0; font-size: 13.5px; color: #68738a; }
-      .fechas-nota { margin: 0 0 14px; font-size: 14.5px; color: var(--ink-soft); max-width: 640px; }
       .campo-ayuda { margin: 6px 0 0; font-size: 13.5px; color: #68738a; line-height: 1.45; }
       .btn-maps {
         display: inline-flex; align-items: center; gap: 6px;
@@ -311,74 +275,10 @@
       .btn-maps:hover { border-color: var(--gold); }
 
       /* ---------- Recuadro del horario (formulario de visitas) ---------- */
-      .horario {
-        margin-top: 18px;
-        background: var(--gold-soft);
-        border: 1.5px solid var(--gold);
-        border-radius: var(--radius);
-        padding: 16px 20px;
-        color: #16233a;
-        font-size: 16.5px;
-        display: flex; gap: 12px; align-items: flex-start;
-      }
-      @media (prefers-color-scheme: dark) { .horario { color: #f3e7cd; } }
-      .horario .reloj { flex: none; width: 24px; height: 24px; margin-top: 2px; }
-      .horario strong { font-weight: 800; }
 
       /* ---------- Meses desplegables (formulario de visitas) ---------- */
-      .mes {
-        background: var(--card);
-        border-radius: 10px;
-        box-shadow: var(--shadow);
-        margin-bottom: 10px; overflow: hidden;
-      }
-      .mes-cab {
-        width: 100%; display: flex; align-items: center; justify-content: space-between;
-        background: none; border: 0; cursor: pointer;
-        padding: 12px 16px; min-height: 52px;
-        font: inherit; font-size: 16px; font-weight: 800; color: #16233a;
-        text-align: left;
-      }
-      .mes-cab .flecha { font-size: 14px; color: var(--gold); transition: transform 0.2s ease; }
-      .mes-cab[aria-expanded="true"] .flecha { transform: rotate(180deg); }
-      .mes-cuerpo { padding: 0 16px 14px; }
-      .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-      .chip {
-        appearance: none; border: 1.5px solid var(--line);
-        background: var(--chip-bg); color: var(--ink);
-        border-radius: 10px; padding: 8px 14px;
-        font: inherit; font-size: 15px; font-weight: 600;
-        cursor: pointer; min-height: 48px; min-width: 64px;
-      }
-      .chip small { display: block; font-size: 11px; font-weight: 600; color: var(--ink-soft); letter-spacing: 0.4px; }
-      .chip[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: #1c1503; }
-      .chip[aria-pressed="true"] small { color: #57450f; }
-      .fechas-resumen {
-        margin: 14px 0 0; font-size: 15px; font-weight: 600;
-        background: var(--gold-soft); color: #16233a;
-        border-radius: 10px; padding: 12px 14px;
-      }
-      @media (prefers-color-scheme: dark) { .fechas-resumen { color: #f3e7cd; } }
 
       /* ---------- Oradores que vienen (formulario de visitas) ---------- */
-      .orador-bloque { margin-bottom: 18px; }
-      .orador-bloque .cab {
-        display: flex; align-items: center; justify-content: space-between; gap: 10px;
-        margin-bottom: 12px;
-      }
-      .orador-bloque .cab h3 { margin: 0; font-size: 17px; font-weight: 800; color: #16233a; }
-      .btn-quitar {
-        border: 1.5px solid #e3b7b4; background: #fdf1f0; color: #8f1d17;
-        border-radius: 999px; padding: 6px 14px; min-height: 40px;
-        font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; flex: none;
-      }
-      .btn-agregar {
-        width: 100%;
-        border: 2px dashed var(--gold); background: transparent; color: var(--ink);
-        border-radius: 12px; padding: 12px; min-height: 52px;
-        font: inherit; font-size: 16px; font-weight: 800; cursor: pointer;
-      }
-      .btn-agregar:active { transform: translateY(1px); }
 
       /* ---------- Enviar ---------- */
       .enviar-zona { margin-top: 38px; }
@@ -411,6 +311,8 @@
         font-size: 14px; font-weight: 700;
       }
 
+      .otro-form { margin-top: 42px; text-align: center; font-size: 15.5px; }
+      .otro-form a { color: var(--gold); font-weight: 800; }
       footer { margin-top: 48px; color: var(--ink-soft); font-size: 13.5px; border-top: 1px solid var(--line); padding-top: 16px; }
       @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
     </style>
@@ -421,24 +323,14 @@
         <div class="inner">
           <span class="etiqueta-destino">Enviar solicitud a Edgar López</span>
           <h1>Arreglos de Discursos</h1>
-          <p>Aquí están <strong>dos botones</strong>. Toque el que necesite y se abrirá abajo: por favor llénelo y, al final, pulse <strong>Enviar por WhatsApp</strong> para enviarlo.</p>
-          <!-- Los dos botones viven dentro del encabezado de letras blancas -->
-          <div class="tabs" role="tablist" aria-label="Elija qué arreglo necesita">
-            <button type="button" class="tab" id="tab-salidas" role="tab" aria-selected="false" aria-controls="panel-salidas"><span class="tab-titulo">1. Visitar su congregación</span><span class="tab-desc">Con este botón, nuestros oradores visitan su congregación. Por favor llénelo y envíelo: al final pulse Enviar por WhatsApp.</span><span class="tab-cta">Toque aquí para abrirlo ↓</span></button>
-            <button type="button" class="tab" id="tab-visitas" role="tab" aria-selected="false" aria-controls="panel-visitas"><span class="tab-titulo">2. Que nos visiten</span><span class="tab-desc">Con este botón, un orador de su congregación nos visita a nosotros. Por favor llénelo y envíelo: al final pulse Enviar por WhatsApp.</span><span class="tab-cta">Toque aquí para abrirlo ↓</span></button>
-          </div>
+          <p>Llene el formulario y, al final, pulse <strong>Enviar por WhatsApp</strong> para enviarlo.</p>
         </div>
       </header>
 
       <main>
-        <!-- Mensaje inicial: todavía no se tocó ningún botón -->
-        <div class="sin-elegir" id="sinElegir">
-          <span class="flecha-arriba" aria-hidden="true">↑</span>
-          Toque uno de los dos botones de arriba para empezar.
-        </div>
 
         <!-- ============ OPCIÓN 1: VISITAR SU CONGREGACIÓN ============ -->
-        <div id="panel-salidas" role="tabpanel" aria-labelledby="tab-salidas" hidden>
+        <div id="panel-salidas">
           <!-- Congregación -->
           <section aria-labelledby="t-cong">
             <h2 id="t-cong">Su congregación</h2>
@@ -471,37 +363,9 @@
           </div>
         </div>
 
-        <!-- ============ FORMULARIO 2: QUE NOS VISITEN ============ -->
-        <div id="panel-visitas" role="tabpanel" aria-labelledby="tab-visitas" hidden>
-          <!-- Congregación -->
-          <section aria-labelledby="v-t-cong">
-            <h2 id="v-t-cong">Su congregación</h2>
-            <div class="panel">
-              <div class="campo">
-                <label class="flabel" for="v-cong">Por favor escriba el nombre de su congregación</label>
-                <input type="text" id="v-cong" placeholder="Ejemplo: Bugambilias" autocomplete="organization" />
-              </div>
-            </div>
-            <div class="horario" role="note">
-              <svg class="reloj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
-              <p style="margin:0">Nuestras reuniones son los <strong>sábados a las 6:00 de la tarde</strong>. La visita es en ese horario.</p>
-            </div>
-          </section>
+              </main>
 
-          <!-- Orador que viene -->
-          <section aria-labelledby="v-t-orador">
-            <h2 id="v-t-orador">Orador que viene</h2>
-            <div id="v-oradores"></div>
-            <button type="button" class="btn-agregar" id="v-btnAgregar">+ Agregar otro orador</button>
-          </section>
-
-          <!-- Enviar -->
-          <div class="enviar-zona">
-            <button type="button" class="btn-enviar" id="v-btnEnviar">Enviar por WhatsApp</button>
-            <div class="aviso" id="v-avisoFinal" role="status"></div>
-          </div>
-        </div>
-      </main>
+      <p class="otro-form"><a href="visiten.html">¿Tu congregación quiere visitarnos? Llena el formulario para que nos visiten →</a></p>
 
       <!-- Visor: la foto del orador en grande al tocar su foto en círculo -->
       <div class="visor" id="visorFoto" hidden role="dialog" aria-modal="true" aria-label="Fotografía ampliada del orador">
@@ -534,71 +398,13 @@
     </div>
 
     <script>
-      /* ---------- Los dos botones del encabezado ----------
-         Al inicio no hay nada abierto. Al tocar un botón se abre solo
-         esa opción y la página sube hasta el principio de lo abierto,
-         para que se empiece a llenar desde arriba. */
-      var tabs = [
-        { tab: document.getElementById("tab-salidas"), panel: document.getElementById("panel-salidas") },
-        { tab: document.getElementById("tab-visitas"), panel: document.getElementById("panel-visitas") }
-      ];
-      var sinElegir = document.getElementById("sinElegir");
-      function activarPestana(activa, enfocar, subir) {
-        var panelActivo = null;
-        tabs.forEach(function (t) {
-          var es = t.tab === activa;
-          t.tab.setAttribute("aria-selected", es ? "true" : "false");
-          t.panel.hidden = !es;
-          if (es) panelActivo = t.panel;
-        });
-        if (sinElegir) sinElegir.hidden = true;
-        if (enfocar) activa.focus();
-        if (subir && panelActivo) {
-          // Esperar a que el navegador pinte lo abierto y subir hasta
-          // su principio, para que empiece a verse desde arriba.
-          requestAnimationFrame(function () {
-            setTimeout(function () {
-              panelActivo.scrollIntoView({ behavior: "smooth", block: "start" });
-            }, 60);
-          });
-        }
-      }
-      tabs.forEach(function (t, i) {
-        t.tab.addEventListener("click", function () { activarPestana(t.tab, false, true); });
-        t.tab.addEventListener("keydown", function (e) {
-          var j = null;
-          if (e.key === "ArrowRight" || e.key === "ArrowDown") j = (i + 1) % tabs.length;
-          else if (e.key === "ArrowLeft" || e.key === "ArrowUp") j = (i - 1 + tabs.length) % tabs.length;
-          if (j !== null) { e.preventDefault(); activarPestana(tabs[j].tab, true, true); }
-        });
-      });
-
-      /* ---------- Apertura directa desde la liga ----------
-         Si la liga trae ?form=visitar se abre «Visitar su congregación»
-         y si trae ?form=visiten se abre «Que nos visiten», igual que si
-         se tocara su botón. Sin el parámetro, o con otro valor, la
-         página se queda como está: ningún formulario abierto. */
-      (function () {
-        var form = null;
-        try { form = new URLSearchParams(window.location.search).get("form"); } catch (e) { form = null; }
-        var destino = null;
-        if (form === "visitar") destino = document.getElementById("tab-salidas");
-        else if (form === "visiten") destino = document.getElementById("tab-visitas");
-        if (destino) activarPestana(destino, false, true);
-      })();
-    </script>
-
-    <script>
       // WhatsApp del encargado de arreglos, al que llegan las solicitudes.
       var WHATSAPP_DESTINO = "525632082782"; // +52 56 3208 2782
 
       // La fecha de cada visita la elige el encargado tocando el campo de
       // fecha de la tarjeta: se abre un calendario del mes (con selector de
       // mes arriba) y ahí toca el sábado o el domingo de la visita; puede
-      // tocar varios días y se agregan al campo separados por comas. El
-      // mismo calendario sirve para el formulario de quienes nos visitan:
-      // ahí solo se pueden tocar los sábados futuros y libres según
-      // V_OCUPADAS, porque nuestra congregación se reúne los sábados.
+      // tocar varios días y se agregan al campo separados por comas.
 
       // Oradores y discursos según las tarjetas de la carpeta «Arreglos de Discursos».
       var ORADORES = [
@@ -744,8 +550,6 @@
       var calBtnPrev = document.getElementById("calPrev");
       var calBtnNext = document.getElementById("calNext");
       var calOrador = null;
-      var calTarjeta = null; // tarjeta del formulario 2 que está eligiendo fecha
-      var calModo = "visita"; // "visita": fecha por orador (formulario 1); "visiten": fecha por tarjeta (formulario 2)
       var calAnio = 2026, calMes = 10;
       // Meses que se pueden recorrer: de noviembre de 2026 a diciembre de 2027.
       var CAL_INICIO = { a: 2026, m: 10 }, CAL_FIN = { a: 2027, m: 11 };
@@ -787,13 +591,8 @@
             var sem = fecha.getDay();
             var esFds = sem === 0 || sem === 6; // sábado o domingo
             var clave = claveFecha(calAnio, calMes, dia);
-            // Formulario 2 («Que nos visiten»): solo sábados futuros y
-            // libres según V_OCUPADAS. Formulario 1: sábados y domingos.
-            var esVisiten = calModo === "visiten";
-            var tocable = esVisiten
-              ? (sem === 6 && fecha >= hoy && !V_OCUPADAS[vFechaValor(calAnio, calMes, dia)])
-              : (esFds && fecha >= hoy);
-            var elegido = esVisiten ? !!(calTarjeta && calTarjeta.dataset.fechaClave === String(clave)) : !!fechasSel[calOrador][clave];
+            var tocable = esFds && fecha >= hoy;
+            var elegido = !!fechasSel[calOrador][clave];
             var b = document.createElement("button");
             b.type = "button";
             b.className = "cal-dia" + (esFds ? " fds" : "") + (elegido ? " sel" : "");
@@ -804,35 +603,21 @@
               b.disabled = true;
             } else {
               b.addEventListener("click", function () {
-                if (esVisiten) {
-                  // Una sola fecha por tarjeta: tocar otro sábado la cambia.
-                  calTarjeta.dataset.fechaClave = String(clave);
-                  vSincronizarFechaTarjeta(calTarjeta);
-                } else {
-                  if (fechasSel[calOrador][clave]) delete fechasSel[calOrador][clave];
-                  else fechasSel[calOrador][clave] = true;
-                  sincronizarFecha(calOrador);
-                }
+                if (fechasSel[calOrador][clave]) delete fechasSel[calOrador][clave];
+                else fechasSel[calOrador][clave] = true;
+                sincronizarFecha(calOrador);
                 pintarCalendario();
               });
             }
             calGrid.appendChild(b);
           })(d);
         }
-        if (calModo === "visiten") {
-          var fElegida = calTarjeta ? vFechaDeTarjeta(calTarjeta) : null;
-          calElegidas.textContent = fElegida
-            ? "Elegida: " + fElegida.texto + "."
-            : "Toque un sábado libre para elegirlo.";
-        } else {
-          calElegidas.textContent = fechasTexto[calOrador]
-            ? "Elegidas: " + fechasTexto[calOrador] + "."
-            : "Toque un sábado o un domingo para elegirlo. Puede elegir varios días.";
-        }
+        calElegidas.textContent = fechasTexto[calOrador]
+          ? "Elegidas: " + fechasTexto[calOrador] + "."
+          : "Toque un sábado o un domingo para elegirlo. Puede elegir varios días.";
       }
 
       function abrirCalendario(id) {
-        calModo = "visita";
         calOrador = id;
         var o = null;
         ORADORES.forEach(function (x) { if (x.id === id) o = x; });
@@ -857,8 +642,6 @@
         calModal.hidden = true;
         document.body.style.overflow = "";
         calOrador = null;
-        calTarjeta = null;
-        calModo = "visita";
       }
       calSelMes.addEventListener("change", function () {
         var partes = calSelMes.value.split("-");
@@ -876,16 +659,9 @@
       });
       document.getElementById("calListo").addEventListener("click", cerrarCalendario);
       document.getElementById("calBorrar").addEventListener("click", function () {
-        if (calModo === "visiten") {
-          if (calTarjeta) {
-            delete calTarjeta.dataset.fechaClave;
-            vSincronizarFechaTarjeta(calTarjeta);
-          }
-        } else {
-          if (!calOrador) return;
-          fechasSel[calOrador] = {};
-          sincronizarFecha(calOrador);
-        }
+        if (!calOrador) return;
+        fechasSel[calOrador] = {};
+        sincronizarFecha(calOrador);
         pintarCalendario();
       });
       calModal.addEventListener("click", function (e) { if (e.target === calModal) cerrarCalendario(); });
@@ -1012,299 +788,6 @@
           lineas.push("Orador: " + e.o.nombre);
           lineas.push("Discurso: N.º " + e.d.n + " — " + e.d.t);
           lineas.push("Fecha: " + e.fecha);
-        });
-        lineas.push("Comuníquese con el orador sólo si es necesario.");
-
-        var mensaje = lineas.join("\n");
-        var url = "https://wa.me/" + WHATSAPP_DESTINO + "?text=" + encodeURIComponent(mensaje);
-
-        aviso.className = "aviso ok";
-        aviso.innerHTML = "<strong>Listo.</strong> Este es el mensaje que llegará por WhatsApp. " +
-          "Si WhatsApp no se abrió solo, toque el botón verde «Abrir WhatsApp y enviar»; " +
-          "o copie el mensaje y péguelo directo en WhatsApp:" +
-          "<pre></pre>" +
-          '<div class="fila"><a class="btn-wa2" target="_blank" rel="noopener" href="' + url + '">Abrir WhatsApp y enviar</a>' +
-          '<button type="button" class="btn-copiar">Copiar mensaje</button></div>';
-        aviso.querySelector("pre").textContent = mensaje;
-        aviso.querySelector(".btn-copiar").addEventListener("click", function () {
-          var b = this;
-          function hecho() { b.textContent = "¡Copiado!"; setTimeout(function () { b.textContent = "Copiar mensaje"; }, 2000); }
-          // Respaldo para archivos descargados o visores donde el
-          // portapapeles moderno no está disponible: textarea + execCommand.
-          function respaldo() {
-            var ta = document.createElement("textarea");
-            ta.value = mensaje;
-            ta.setAttribute("readonly", "");
-            ta.style.position = "fixed";
-            ta.style.opacity = "0";
-            document.body.appendChild(ta);
-            ta.select();
-            ta.setSelectionRange(0, ta.value.length);
-            try { document.execCommand("copy"); } catch (e) { /* sin respaldo */ }
-            document.body.removeChild(ta);
-            hecho();
-          }
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(mensaje).then(hecho, respaldo);
-          } else { respaldo(); }
-        });
-        // Si el navegador bloquea la apertura automática (pasa en Safari y
-        // en visores de archivos), se intenta de nuevo con un enlace real;
-        // el botón verde del cuadro queda como camino manual.
-        var ventana = window.open(url, "_blank");
-        if (!ventana) {
-          var enlace = document.createElement("a");
-          enlace.href = url;
-          enlace.target = "_blank";
-          enlace.rel = "noopener";
-          enlace.style.display = "none";
-          document.body.appendChild(enlace);
-          enlace.click();
-          document.body.removeChild(enlace);
-        }
-        aviso.scrollIntoView({ behavior: "smooth", block: "center" });
-      });
-    </script>
-
-    <script>
-      /* ================================================================
-         FORMULARIO 2: QUE NOS VISITEN
-         Reuniones los sábados a las 6:00 de la tarde; cada orador que
-         viene lleva su propia fecha, elegida en el calendario (solo
-         sábados libres según V_OCUPADAS), con su discurso, su canción
-         y, si quiere, una imagen. Todo llega al mismo WhatsApp.
-         ================================================================ */
-      var HORARIO_FIJO = "sábados a las 6:00 de la tarde";
-
-      var NOMBRES_MES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-
-      function vFechaLarga(anio, mes, dia) { return "sábado " + dia + " de " + NOMBRES_MES[mes] + " de " + anio; }
-      function vFechaValor(anio, mes, dia) { return anio + "-" + mes + "-" + dia; }
-
-      // Sábados ya ocupados en la hoja VISITAS: tienen visita asignada y
-      // NO se pueden elegir en el calendario. La primera fecha libre es
-      // el sábado 20 de febrero de 2027; por eso el registro incluye
-      // todos los sábados desde noviembre de 2026 hasta el 13 de febrero
-      // de 2027. Si se agenda una visita nueva en un sábado que hoy está
-      // libre, hay que agregar ese sábado aquí.
-      // Clave: anio-mes(0-11)-dia, igual que vFechaValor.
-      var V_OCUPADAS = {
-        "2026-10-21": "Abel Santín",
-        "2026-10-28": "Israel Rivera",
-        "2026-11-5": "Alejandro Martínez",
-        "2026-11-12": "Edgar López",
-        "2026-11-19": "Manuel Lucero",
-        "2026-11-26": "Gerardo García",
-        "2027-0-2": "Rafael Mota",
-        "2027-0-9": "Víctor Nabor",
-        "2027-0-16": "Marcos García",
-        "2027-0-23": "Rubén Torres",
-        "2027-0-30": "Bonifacio Vergara",
-        "2027-1-6": "Giovanni Chávez",
-        "2027-1-13": "Daniel Montiel"
-      };
-
-      /* ---------- Fecha de la visita: dentro de cada tarjeta ----------
-         Cada tarjeta de orador tiene su propio botón «Elegir la fecha»
-         que abre el mismo calendario del formulario 1. Solo se pueden
-         tocar los sábados futuros y libres (los de V_OCUPADAS no se
-         pueden tocar). Cada tarjeta guarda UNA sola fecha: al tocar
-         otro sábado se cambia por el nuevo. */
-      function vClaveAFecha(clave) {
-        var c = Number(clave);
-        var a = Math.floor(c / 10000);
-        var resto = c % 10000;
-        var m = Math.floor(resto / 100) - 1;
-        var d = resto % 100;
-        return { valor: vFechaValor(a, m, d), texto: vFechaLarga(a, m, d) };
-      }
-      function vFechaDeTarjeta(bloque) {
-        var c = bloque.dataset.fechaClave;
-        return c ? vClaveAFecha(c) : null;
-      }
-      function vSincronizarFechaTarjeta(bloque) {
-        var el = bloque.querySelector(".o-fecha-texto");
-        var f = vFechaDeTarjeta(bloque);
-        if (f) {
-          el.textContent = "Fecha: " + f.texto + ".";
-          el.classList.remove("falta");
-        } else {
-          el.textContent = "Sin fecha elegida.";
-        }
-      }
-      function vAbrirCalendario(bloque) {
-        calModo = "visiten";
-        calTarjeta = bloque;
-        calTitulo.textContent = "Elija la fecha de la visita";
-        var clave = bloque.dataset.fechaClave;
-        if (clave) {
-          var c = Number(clave);
-          calAnio = Math.floor(c / 10000);
-          calMes = Math.floor((c % 10000) / 100) - 1;
-        } else {
-          // Sin fecha elegida, empezar en febrero de 2027, el primer mes
-          // con sábados libres; si hoy ya pasó esa fecha, empezar en hoy.
-          var hoy = new Date();
-          if (hoy.getFullYear() > 2027 || (hoy.getFullYear() === 2027 && hoy.getMonth() > 1)) {
-            calAnio = hoy.getFullYear();
-            calMes = hoy.getMonth();
-          } else {
-            calAnio = 2027;
-            calMes = 1;
-          }
-        }
-        if (!calEnRango(calAnio, calMes)) { calAnio = CAL_INICIO.a; calMes = CAL_INICIO.m; }
-        pintarCalendario();
-        calModal.hidden = false;
-        document.body.style.overflow = "hidden";
-        document.getElementById("calListo").focus();
-      }
-
-      /* ---------- Oradores que vienen: se escriben y se pueden agregar más ---------- */
-      var vContOradores = document.getElementById("v-oradores");
-      var vContador = 0;
-
-      function vCrearOrador() {
-        vContador++;
-        var n = vContador;
-        var bloque = document.createElement("div");
-        bloque.className = "panel orador-bloque";
-        bloque.innerHTML =
-          '<div class="cab"><h3>Orador ' + n + '</h3>' +
-          (n > 1 ? '<button type="button" class="btn-quitar">Quitar</button>' : "") +
-          "</div>" +
-          '<div class="campo">' +
-            '<label class="flabel" for="vorador-nombre-' + n + '">Nombre del orador</label>' +
-            '<input type="text" id="vorador-nombre-' + n + '" class="o-nombre" placeholder="Nombre del orador que viene" />' +
-          "</div>" +
-          '<div class="campo">' +
-            '<span class="subtit">Fecha de la visita</span>' +
-            '<button type="button" class="btn-agregar o-fecha-btn">Elegir la fecha</button>' +
-            '<p class="fecha-ayuda">Toque el botón y elija el sábado de la visita en el calendario. Solo se pueden elegir los sábados libres.</p>' +
-            '<p class="fechas-resumen o-fecha-texto">Sin fecha elegida.</p>' +
-          "</div>" +
-          '<div class="campo">' +
-            '<label class="flabel" for="vorador-discurso-' + n + '">Su discurso (número y título)</label>' +
-            '<input type="text" id="vorador-discurso-' + n + '" class="o-discurso" placeholder="Ejemplo: 107 Eduquemos nuestra conciencia" />' +
-          "</div>" +
-          '<div class="campo">' +
-            '<span class="subtit">Canción</span>' +
-            '<label class="flabel" for="vorador-cancion-num-' + n + '">N.º de canción</label>' +
-            '<input type="text" id="vorador-cancion-num-' + n + '" class="o-cancion-num" placeholder="Ejemplo: 132" inputmode="numeric" />' +
-          "</div>" +
-          '<div class="campo">' +
-            '<label class="flabel" for="vorador-cancion-titulo-' + n + '">Título de la canción</label>' +
-            '<input type="text" id="vorador-cancion-titulo-' + n + '" class="o-cancion-titulo" placeholder="Ejemplo: Ahora ya somos uno" />' +
-          "</div>" +
-          '<div class="campo">' +
-            '<label class="flabel" for="vorador-imagen-' + n + '">Imagen <span class="opc">(opcional)</span></label>' +
-            '<input type="file" id="vorador-imagen-' + n + '" class="o-imagen" accept=".jpg,.jpeg,.png,.pdf" />' +
-            '<p class="campo-ayuda">Opcional. Puede subir una imagen en JPG o PNG, o un archivo PDF. El archivo no se envía con este mensaje: solo se anota su nombre abajo y luego se envía la imagen por separado por WhatsApp.</p>' +
-            '<p class="campo-ayuda o-imagen-nombre" hidden></p>' +
-          "</div>";
-        vContOradores.appendChild(bloque);
-        bloque.querySelector(".o-fecha-btn").addEventListener("click", function () { vAbrirCalendario(bloque); });
-        var quitar = bloque.querySelector(".btn-quitar");
-        if (quitar) {
-          quitar.addEventListener("click", function () {
-            bloque.remove();
-            vRenumerar();
-          });
-        }
-        bloque.querySelectorAll("input").forEach(function (inp) {
-          inp.addEventListener("input", function () { inp.classList.remove("falta"); });
-        });
-        var fileInput = bloque.querySelector(".o-imagen");
-        var nombreArchivo = bloque.querySelector(".o-imagen-nombre");
-        fileInput.addEventListener("change", function () {
-          var f = fileInput.files && fileInput.files[0];
-          if (f) {
-            nombreArchivo.hidden = false;
-            nombreArchivo.textContent = "Archivo elegido: " + f.name;
-          } else {
-            nombreArchivo.hidden = true;
-            nombreArchivo.textContent = "";
-          }
-        });
-        return bloque;
-      }
-      function vRenumerar() {
-        var bloques = vContOradores.querySelectorAll(".orador-bloque");
-        bloques.forEach(function (b, i) {
-          b.querySelector("h3").textContent = "Orador " + (i + 1);
-        });
-      }
-      vCrearOrador();
-      document.getElementById("v-btnAgregar").addEventListener("click", function () {
-        var b = vCrearOrador();
-        var inp = b.querySelector(".o-nombre");
-        if (inp) inp.focus();
-      });
-
-      function vOradoresCompletos() {
-        var lista = [];
-        vContOradores.querySelectorAll(".orador-bloque").forEach(function (b) {
-          var nombre = b.querySelector(".o-nombre").value.trim();
-          var discurso = b.querySelector(".o-discurso").value.trim();
-          var cancionNum = b.querySelector(".o-cancion-num").value.trim();
-          var cancionTitulo = b.querySelector(".o-cancion-titulo").value.trim();
-          var fileInput = b.querySelector(".o-imagen");
-          var imagen = (fileInput.files && fileInput.files[0]) ? fileInput.files[0].name : "";
-          var fechaObj = vFechaDeTarjeta(b);
-          if (nombre && discurso && fechaObj) lista.push({ nombre: nombre, discurso: discurso, fecha: fechaObj.texto, cancionNum: cancionNum, cancionTitulo: cancionTitulo, imagen: imagen });
-        });
-        return lista;
-      }
-
-      /* ---------- Enviar ---------- */
-      document.getElementById("v-cong").addEventListener("input", function () { this.classList.remove("falta"); });
-
-      document.getElementById("v-btnEnviar").addEventListener("click", function () {
-        var aviso = document.getElementById("v-avisoFinal");
-        var congInput = document.getElementById("v-cong");
-        var cong = congInput.value.trim();
-        var oradores = vOradoresCompletos();
-
-        // Para enviar se necesita: la congregación y al menos un orador
-        // con nombre, discurso y fecha. Los oradores a medias o vacíos
-        // simplemente no se incluyen y no bloquean el envío.
-        var faltan = [];
-        if (!cong) faltan.push("el nombre de su congregación");
-        var hayNombreDiscurso = false;
-        vContOradores.querySelectorAll(".orador-bloque").forEach(function (b) {
-          var n = b.querySelector(".o-nombre").value.trim();
-          var d = b.querySelector(".o-discurso").value.trim();
-          if (n && d) {
-            hayNombreDiscurso = true;
-            if (!vFechaDeTarjeta(b)) b.querySelector(".o-fecha-texto").classList.add("falta");
-          }
-        });
-        if (!oradores.length) {
-          faltan.push(hayNombreDiscurso ? "la fecha del orador" : "al menos un orador con su nombre, su discurso y su fecha");
-        }
-        congInput.classList.toggle("falta", !cong);
-        if (faltan.length) {
-          aviso.className = "aviso error";
-          aviso.textContent = "Falta: " + faltan.join(", ") + ".";
-          aviso.scrollIntoView({ behavior: "smooth", block: "center" });
-          return;
-        }
-
-        var lineas = [
-          "Congregación: " + cong,
-          "Horario de la reunión: " + HORARIO_FIJO
-        ];
-        oradores.forEach(function (o) {
-          lineas.push("Orador: " + o.nombre);
-          lineas.push("Fecha: " + o.fecha);
-          lineas.push("Discurso: " + o.discurso);
-          if (o.cancionNum || o.cancionTitulo) {
-            var cancion = "Canción:";
-            if (o.cancionNum) cancion += " N.º " + o.cancionNum;
-            if (o.cancionTitulo) cancion += (o.cancionNum ? " — " : " ") + o.cancionTitulo;
-            lineas.push(cancion);
-          }
-          if (o.imagen) lineas.push("Imagen: " + o.imagen + " (enviar por separado por WhatsApp)");
         });
         lineas.push("Comuníquese con el orador sólo si es necesario.");
 

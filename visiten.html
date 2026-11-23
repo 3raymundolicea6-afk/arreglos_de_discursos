@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Arreglos de Discursos — Que nos visiten</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #edf0f4;
+        --ink: #16233a;
+        --ink-soft: #46536b;
+        --card: #ffffff;
+        --line: #ccd4df;
+        --gold: #b98a2f;
+        --gold-soft: #f3e7cd;
+        --err: #b3261e;
+        --chip-bg: #ffffff;
+        --shadow: 0 10px 30px rgba(20, 38, 63, 0.12);
+        --radius: 14px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0c1420;
+          --ink: #eef2f8;
+          --ink-soft: #a9b6c9;
+          --card: #ffffff;
+          --line: #2a3a52;
+          --gold: #d9ab4a;
+          --gold-soft: #2a2113;
+          --chip-bg: #16233a;
+          --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      button, select, input { min-height: 2.5rem; }
+      .wrap { max-width: 1060px; margin: 0 auto; padding: 0 18px 64px; }
+
+      /* ---------- Encabezado ---------- */
+      header.hero {
+        background: linear-gradient(160deg, #16293f 0%, #0e1a2b 70%);
+        color: #f2f5f9;
+        margin: 0 -18px;
+        padding: 38px 22px 32px;
+        border-bottom: 4px solid var(--gold);
+      }
+      header.hero .inner { max-width: 1060px; margin: 0 auto; }
+      .etiqueta-destino {
+        display: block;
+        color: #9fb0c4;
+        font-weight: 600; font-size: 13.5px;
+        margin-bottom: 10px;
+      }
+      header.hero h1 {
+        font-family: "Lora", Georgia, serif;
+        font-size: clamp(28px, 6vw, 42px);
+        font-weight: 700;
+        margin: 0 0 10px;
+        letter-spacing: 0.2px;
+      }
+      header.hero p { margin: 0; max-width: 700px; color: #c6d2e2; font-size: 16.5px; }
+      header.hero p strong { color: #ffffff; }
+
+
+      /* ---------- Secciones ---------- */
+      section { margin-top: 38px; }
+      h2 {
+        font-family: "Lora", Georgia, serif;
+        font-size: clamp(22px, 4.5vw, 28px);
+        margin: 0 0 14px;
+        font-weight: 700;
+      }
+      [hidden] { display: none !important; }
+
+      /* ---------- Panel genérico ---------- */
+      .panel {
+        background: var(--card); color: #16233a;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 20px;
+      }
+      label.flabel { display: block; font-weight: 700; font-size: 15px; margin-bottom: 6px; color: #16233a; }
+      label.flabel .opc { font-weight: 500; color: #68738a; font-size: 13.5px; }
+      input[type="text"], input[type="tel"] {
+        width: 100%;
+        border: 1.5px solid #c3ccd9;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font: inherit; font-size: 16px;
+        background: #fbfcfe; color: #16233a;
+      }
+      input[type="text"]:focus { outline: 3px solid rgba(185, 138, 47, 0.35); border-color: var(--gold); }
+      input[type="file"] { width: 100%; font: inherit; font-size: 15px; color: #16233a; }
+      .o-imagen-nombre { font-weight: 700; color: #14532d; }
+      input.falta { border-color: var(--err); outline: 3px solid rgba(179, 38, 30, 0.2); }
+      .campo + .campo { margin-top: 16px; }
+
+      /* ---------- Tarjetas de oradores ---------- */
+
+      /* ---------- Visor de la foto ampliada ---------- */
+      fieldset { border: 0; margin: 0; padding: 0; }
+      legend, .subtit { font-weight: 800; font-size: 13px; letter-spacing: 0.6px; text-transform: uppercase; color: #68738a; margin-bottom: 8px; padding: 0; }
+      .subtit { display: block; }
+
+      /* ---------- Campo de fecha dentro de cada tarjeta (abre el calendario) ---------- */
+
+      /* ---------- Calendario para elegir la fecha de la visita ---------- */
+      .cal-modal {
+        position: fixed; inset: 0; z-index: 60;
+        background: rgba(8, 14, 24, 0.82);
+        display: flex; align-items: center; justify-content: center;
+        padding: 16px;
+      }
+      .cal-caja {
+        background: #ffffff; color: #16233a;
+        border-radius: 16px; box-shadow: var(--shadow);
+        padding: 18px; width: 100%; max-width: 380px;
+        max-height: 92vh; overflow: auto;
+      }
+      .cal-titulo { font-family: "Lora", Georgia, serif; font-size: 19px; font-weight: 700; margin: 0 0 12px; }
+      .cal-nav { display: flex; gap: 8px; align-items: stretch; margin-bottom: 12px; }
+      .cal-nav select {
+        flex: 1; min-width: 0;
+        border: 1.5px solid #c3ccd9; border-radius: 10px;
+        padding: 8px 10px; min-height: 44px;
+        font: inherit; font-size: 16px; font-weight: 700;
+        background: #fbfcfe; color: #16233a;
+      }
+      .cal-nav select:focus { outline: 3px solid rgba(185, 138, 47, 0.35); border-color: var(--gold); }
+      .cal-flecha {
+        flex: none; width: 44px; min-height: 44px;
+        border: 1.5px solid #c3ccd9; border-radius: 10px;
+        background: #fbfcfe; color: #16233a;
+        font-size: 22px; font-weight: 800; cursor: pointer; line-height: 1;
+      }
+      .cal-flecha:disabled { opacity: 0.35; cursor: default; }
+      .cal-semana, .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+      .cal-semana { margin-bottom: 4px; }
+      .cal-semana span { text-align: center; font-size: 12px; font-weight: 800; color: #68738a; padding: 4px 0; }
+      .cal-semana span.fds { color: var(--gold); }
+      .cal-dia {
+        border: 1.5px solid transparent; background: transparent;
+        border-radius: 10px; min-height: 44px; padding: 4px 0;
+        font: inherit; font-size: 15.5px; font-weight: 600; color: #16233a;
+        text-align: center;
+      }
+      button.cal-dia { cursor: pointer; }
+      button.cal-dia.fds { background: #fdf6e3; border-color: #e8d9ae; font-weight: 800; }
+      button.cal-dia.sel { background: var(--gold); border-color: var(--gold); color: #1c1503; }
+      .cal-dia:disabled { color: #b6bfcc; background: transparent; border-color: transparent; font-weight: 500; cursor: default; }
+      .cal-dia.vacio { visibility: hidden; }
+      .cal-elegidas { margin: 12px 0 0; font-size: 14px; font-weight: 600; color: #46536b; min-height: 1.3em; }
+      .cal-acciones { display: flex; gap: 8px; margin-top: 14px; }
+      .btn-cal-listo {
+        flex: 1; border: 0; border-radius: 10px;
+        background: #14263f; color: #f2f5f9;
+        font: inherit; font-size: 16px; font-weight: 800;
+        min-height: 48px; cursor: pointer;
+      }
+      .btn-cal-borrar {
+        border: 1.5px solid #e3b7b4; background: #fdf1f0; color: #8f1d17;
+        border-radius: 10px; padding: 6px 14px; min-height: 48px;
+        font: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer;
+      }
+      .fecha-ayuda { margin: 6px 0 0; font-size: 13.5px; color: #68738a; }
+      .campo-ayuda { margin: 6px 0 0; font-size: 13.5px; color: #68738a; line-height: 1.45; }
+
+      /* ---------- Recuadro del horario (formulario de visitas) ---------- */
+      .horario {
+        margin-top: 18px;
+        background: var(--gold-soft);
+        border: 1.5px solid var(--gold);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        color: #16233a;
+        font-size: 16.5px;
+        display: flex; gap: 12px; align-items: flex-start;
+      }
+      @media (prefers-color-scheme: dark) { .horario { color: #f3e7cd; } }
+      .horario .reloj { flex: none; width: 24px; height: 24px; margin-top: 2px; }
+      .horario strong { font-weight: 800; }
+
+      /* ---------- Meses desplegables (formulario de visitas) ---------- */
+      .fechas-resumen {
+        margin: 14px 0 0; font-size: 15px; font-weight: 600;
+        background: var(--gold-soft); color: #16233a;
+        border-radius: 10px; padding: 12px 14px;
+      }
+      @media (prefers-color-scheme: dark) { .fechas-resumen { color: #f3e7cd; } }
+
+      /* ---------- Oradores que vienen (formulario de visitas) ---------- */
+      .orador-bloque { margin-bottom: 18px; }
+      .orador-bloque .cab {
+        display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        margin-bottom: 12px;
+      }
+      .orador-bloque .cab h3 { margin: 0; font-size: 17px; font-weight: 800; color: #16233a; }
+      .btn-quitar {
+        border: 1.5px solid #e3b7b4; background: #fdf1f0; color: #8f1d17;
+        border-radius: 999px; padding: 6px 14px; min-height: 40px;
+        font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; flex: none;
+      }
+      .btn-agregar {
+        width: 100%;
+        border: 2px dashed var(--gold); background: transparent; color: var(--ink);
+        border-radius: 12px; padding: 12px; min-height: 52px;
+        font: inherit; font-size: 16px; font-weight: 800; cursor: pointer;
+      }
+      .btn-agregar:active { transform: translateY(1px); }
+
+      /* ---------- Enviar ---------- */
+      .enviar-zona { margin-top: 38px; }
+      .btn-enviar {
+        width: 100%; border: 0; border-radius: 12px;
+        background: #1faa55; color: #fff;
+        font: inherit; font-size: 20px; font-weight: 800;
+        padding: 16px; min-height: 60px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        box-shadow: var(--shadow);
+      }
+      .btn-enviar:active { transform: translateY(1px); }
+      .aviso { display: none; border-radius: 10px; padding: 12px 14px; font-size: 14.5px; margin-top: 14px; }
+      .aviso.error { display: block; background: #fdeceb; color: #7a130d; border: 1px solid #f3c2bf; }
+      .aviso.ok { display: block; background: #e9f9ef; color: #14532d; border: 1px solid #bfe3cc; }
+      .aviso pre {
+        white-space: pre-wrap; font-family: inherit; font-size: 14px;
+        background: rgba(255,255,255,0.65); border-radius: 8px; padding: 10px; margin: 10px 0;
+      }
+      .aviso .fila { display: flex; flex-wrap: wrap; gap: 8px; }
+      .btn-copiar {
+        border: 1.5px solid #14532d; background: transparent; color: #14532d;
+        border-radius: 999px; padding: 6px 16px; min-height: 40px;
+        font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+      }
+      .btn-wa2 {
+        display: inline-flex; align-items: center;
+        background: #1faa55; color: #fff; text-decoration: none;
+        border-radius: 999px; padding: 6px 16px; min-height: 40px;
+        font-size: 14px; font-weight: 700;
+      }
+
+      .otro-form { margin-top: 42px; text-align: center; font-size: 15.5px; }
+      .otro-form a { color: var(--gold); font-weight: 800; }
+      footer { margin-top: 48px; color: var(--ink-soft); font-size: 13.5px; border-top: 1px solid var(--line); padding-top: 16px; }
+      @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="hero">
+        <div class="inner">
+          <span class="etiqueta-destino">Enviar solicitud a Edgar López</span>
+          <h1>Que nos visiten</h1>
+          <p>Llene este formulario con los oradores que nos visitarán. Cuando lo recibamos, le regresaremos por WhatsApp la solicitud; después nos lo puede volver a mandar agregando la <strong>canción</strong> y las <strong>imágenes</strong>.</p>
+        </div>
+      </header>
+
+      <main>
+<!-- ============ FORMULARIO 2: QUE NOS VISITEN ============ -->
+        <div id="panel-visitas">
+          <!-- Congregación -->
+          <section aria-labelledby="v-t-cong">
+            <h2 id="v-t-cong">Su congregación</h2>
+            <div class="panel">
+              <div class="campo">
+                <label class="flabel" for="v-cong">Por favor escriba el nombre de su congregación</label>
+                <input type="text" id="v-cong" placeholder="Ejemplo: Bugambilias" autocomplete="organization" />
+              </div>
+            </div>
+            <div class="horario" role="note">
+              <svg class="reloj" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
+              <p style="margin:0">Nuestras reuniones son los <strong>sábados a las 6:00 de la tarde</strong>. La visita es en ese horario.</p>
+            </div>
+          </section>
+
+          <!-- Orador que viene -->
+          <section aria-labelledby="v-t-orador">
+            <h2 id="v-t-orador">Orador que viene</h2>
+            <div id="v-oradores"></div>
+            <button type="button" class="btn-agregar" id="v-btnAgregar">+ Agregar otro orador</button>
+          </section>
+
+          <!-- Enviar -->
+          <div class="enviar-zona">
+            <button type="button" class="btn-enviar" id="v-btnEnviar">Enviar por WhatsApp</button>
+            <div class="aviso" id="v-avisoFinal" role="status"></div>
+          </div>
+        </div>
+      </main>
+
+      <p class="otro-form"><a href="index.html">¿Quieres pedir un orador para visitar tu congregación? Abre el formulario para visitarlos →</a></p>
+
+<!-- Calendario: se abre al tocar el campo de fecha de un orador -->
+      <div class="cal-modal" id="calendario" hidden role="dialog" aria-modal="true" aria-label="Calendario para elegir la fecha de la visita">
+        <div class="cal-caja">
+          <p class="cal-titulo" id="calTitulo">Elija la fecha</p>
+          <div class="cal-nav">
+            <button type="button" class="cal-flecha" id="calPrev" aria-label="Mes anterior">‹</button>
+            <select id="calMesSel" aria-label="Mes y año"></select>
+            <button type="button" class="cal-flecha" id="calNext" aria-label="Mes siguiente">›</button>
+          </div>
+
+    </div>
+
+    <script>
+      // WhatsApp del encargado de arreglos, al que llegan las solicitudes.
+      var WHATSAPP_DESTINO = "525632082782"; // +52 56 3208 2782
+
+      /* ---------- Calendario para elegir la fecha ----------
+         Al tocar «Elegir la fecha» en una tarjeta se abre el calendario
+         del mes, con toda la semana a la vista y un selector de mes
+         arriba. Solo se pueden tocar los sábados futuros y libres
+         según V_OCUPADAS; cada tarjeta guarda UNA sola fecha. */
+      var MESES_NOM = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+      var DIAS_NOM = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];      var calModal = document.getElementById("calendario");
+      var calGrid = document.getElementById("calGrid");
+      var calSelMes = document.getElementById("calMesSel");
+      var calTitulo = document.getElementById("calTitulo");
+      var calElegidas = document.getElementById("calElegidas");
+      var calBtnPrev = document.getElementById("calPrev");
+      var calBtnNext = document.getElementById("calNext");
+      var calOrador = null;
+      var calTarjeta = null; // tarjeta que está eligiendo fecha
+      var calAnio = 2026, calMes = 10;
+      // Meses que se pueden recorrer: de noviembre de 2026 a diciembre de 2027.
+      var CAL_INICIO = { a: 2026, m: 10 }, CAL_FIN = { a: 2027, m: 11 };
+      (function () {
+        var a = CAL_INICIO.a, m = CAL_INICIO.m;
+        while (a < CAL_FIN.a || (a === CAL_FIN.a && m <= CAL_FIN.m)) {
+          var op = document.createElement("option");
+          op.value = a + "-" + m;
+          op.textContent = MESES_NOM[m].charAt(0).toUpperCase() + MESES_NOM[m].slice(1) + " de " + a;
+          calSelMes.appendChild(op);
+          m++; if (m > 11) { m = 0; a++; }
+        }
+      })();
+      function calEnRango(a, m) {
+        if (a < CAL_INICIO.a || (a === CAL_INICIO.a && m < CAL_INICIO.m)) return false;
+        if (a > CAL_FIN.a || (a === CAL_FIN.a && m > CAL_FIN.m)) return false;
+        return true;
+      }
+
+      function pintarCalendario() {
+        calSelMes.value = calAnio + "-" + calMes;
+        var pM = (calMes + 11) % 12, pA = calMes === 0 ? calAnio - 1 : calAnio;
+        var nM = (calMes + 1) % 12, nA = calMes === 11 ? calAnio + 1 : calAnio;
+        calBtnPrev.disabled = !calEnRango(pA, pM);
+        calBtnNext.disabled = !calEnRango(nA, nM);
+        calGrid.innerHTML = "";
+        var huecos = (new Date(calAnio, calMes, 1).getDay() + 6) % 7; // la semana empieza en lunes
+        var diasMes = new Date(calAnio, calMes + 1, 0).getDate();
+        var hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+        var h, s;
+        for (h = 0; h < huecos; h++) {
+          s = document.createElement("span");
+          s.className = "cal-dia vacio";
+          calGrid.appendChild(s);
+        }
+        for (var d = 1; d <= diasMes; d++) {
+          (function (dia) {
+            var fecha = new Date(calAnio, calMes, dia);
+            var sem = fecha.getDay();
+            var esFds = sem === 0 || sem === 6; // sábado o domingo
+            var clave = claveFecha(calAnio, calMes, dia);
+            // Solo sábados futuros y libres según V_OCUPADAS.
+            var tocable = (sem === 6 && fecha >= hoy && !V_OCUPADAS[vFechaValor(calAnio, calMes, dia)]);
+            var elegido = !!(calTarjeta && calTarjeta.dataset.fechaClave === String(clave));
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "cal-dia" + (esFds ? " fds" : "") + (elegido ? " sel" : "");
+            b.textContent = dia;
+            b.setAttribute("aria-pressed", elegido ? "true" : "false");
+            b.setAttribute("aria-label", fechaLargaTxt(calAnio, calMes, dia));
+            if (!tocable) {
+              b.disabled = true;
+            } else {
+              b.addEventListener("click", function () {
+                // Una sola fecha por tarjeta: tocar otro sábado la cambia.
+                calTarjeta.dataset.fechaClave = String(clave);
+                vSincronizarFechaTarjeta(calTarjeta);
+                pintarCalendario();
+              });
+            }
+            calGrid.appendChild(b);
+          })(d);
+        }
+        var fElegida = calTarjeta ? vFechaDeTarjeta(calTarjeta) : null;
+        calElegidas.textContent = fElegida
+          ? "Elegida: " + fElegida.texto + "."
+          : "Toque un sábado libre para elegirlo.";
+      }
+
+      function cerrarCalendario() {
+        calModal.hidden = true;
+        document.body.style.overflow = "";
+        calTarjeta = null;
+      }
+      calSelMes.addEventListener("change", function () {
+        var partes = calSelMes.value.split("-");
+        calAnio = parseInt(partes[0], 10);
+        calMes = parseInt(partes[1], 10);
+        pintarCalendario();
+      });
+      calBtnPrev.addEventListener("click", function () {
+        calMes--; if (calMes < 0) { calMes = 11; calAnio--; }
+        pintarCalendario();
+      });
+      calBtnNext.addEventListener("click", function () {
+        calMes++; if (calMes > 11) { calMes = 0; calAnio++; }
+        pintarCalendario();
+      });
+      document.getElementById("calListo").addEventListener("click", cerrarCalendario);
+      document.getElementById("calBorrar").addEventListener("click", function () {
+        if (calTarjeta) {
+          delete calTarjeta.dataset.fechaClave;
+          vSincronizarFechaTarjeta(calTarjeta);
+        }
+        pintarCalendario();
+      });
+      calModal.addEventListener("click", function (e) { if (e.target === calModal) cerrarCalendario(); });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !calModal.hidden) cerrarCalendario();
+      });
+    </script>
+
+    <script>
+      /* ================================================================
+         FORMULARIO 2: QUE NOS VISITEN
+         Reuniones los sábados a las 6:00 de la tarde; cada orador que
+         viene lleva su propia fecha, elegida en el calendario (solo
+         sábados libres según V_OCUPADAS), con su discurso, su canción
+         y, si quiere, una imagen. Todo llega al mismo WhatsApp.
+         ================================================================ */
+      var HORARIO_FIJO = "sábados a las 6:00 de la tarde";
+
+      var NOMBRES_MES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+
+      function vFechaLarga(anio, mes, dia) { return "sábado " + dia + " de " + NOMBRES_MES[mes] + " de " + anio; }
+      function vFechaValor(anio, mes, dia) { return anio + "-" + mes + "-" + dia; }
+
+      // Sábados ya ocupados en la hoja VISITAS: tienen visita asignada y
+      // NO se pueden elegir en el calendario. La primera fecha libre es
+      // el sábado 20 de febrero de 2027; por eso el registro incluye
+      // todos los sábados desde noviembre de 2026 hasta el 13 de febrero
+      // de 2027. Si se agenda una visita nueva en un sábado que hoy está
+      // libre, hay que agregar ese sábado aquí.
+      // Clave: anio-mes(0-11)-dia, igual que vFechaValor.
+      var V_OCUPADAS = {
+        "2026-10-21": "Abel Santín",
+        "2026-10-28": "Israel Rivera",
+        "2026-11-5": "Alejandro Martínez",
+        "2026-11-12": "Edgar López",
+        "2026-11-19": "Manuel Lucero",
+        "2026-11-26": "Gerardo García",
+        "2027-0-2": "Rafael Mota",
+        "2027-0-9": "Víctor Nabor",
+        "2027-0-16": "Marcos García",
+        "2027-0-23": "Rubén Torres",
+        "2027-0-30": "Bonifacio Vergara",
+        "2027-1-6": "Giovanni Chávez",
+        "2027-1-13": "Daniel Montiel"
+      };
+
+      /* ---------- Fecha de la visita: dentro de cada tarjeta ----------
+         Cada tarjeta de orador tiene su propio botón «Elegir la fecha»
+         que abre el mismo calendario del formulario 1. Solo se pueden
+         tocar los sábados futuros y libres (los de V_OCUPADAS no se
+         pueden tocar). Cada tarjeta guarda UNA sola fecha: al tocar
+         otro sábado se cambia por el nuevo. */
+      function vClaveAFecha(clave) {
+        var c = Number(clave);
+        var a = Math.floor(c / 10000);
+        var resto = c % 10000;
+        var m = Math.floor(resto / 100) - 1;
+        var d = resto % 100;
+        return { valor: vFechaValor(a, m, d), texto: vFechaLarga(a, m, d) };
+      }
+      function vFechaDeTarjeta(bloque) {
+        var c = bloque.dataset.fechaClave;
+        return c ? vClaveAFecha(c) : null;
+      }
+      function vSincronizarFechaTarjeta(bloque) {
+        var el = bloque.querySelector(".o-fecha-texto");
+        var f = vFechaDeTarjeta(bloque);
+        if (f) {
+          el.textContent = "Fecha: " + f.texto + ".";
+          el.classList.remove("falta");
+        } else {
+          el.textContent = "Sin fecha elegida.";
+        }
+      }
+      function vAbrirCalendario(bloque) {
+        calTarjeta = bloque;
+        calTitulo.textContent = "Elija la fecha de la visita";
+        var clave = bloque.dataset.fechaClave;
+        if (clave) {
+          var c = Number(clave);
+          calAnio = Math.floor(c / 10000);
+          calMes = Math.floor((c % 10000) / 100) - 1;
+        } else {
+          // Sin fecha elegida, empezar en febrero de 2027, el primer mes
+          // con sábados libres; si hoy ya pasó esa fecha, empezar en hoy.
+          var hoy = new Date();
+          if (hoy.getFullYear() > 2027 || (hoy.getFullYear() === 2027 && hoy.getMonth() > 1)) {
+            calAnio = hoy.getFullYear();
+            calMes = hoy.getMonth();
+          } else {
+            calAnio = 2027;
+            calMes = 1;
+          }
+        }
+        if (!calEnRango(calAnio, calMes)) { calAnio = CAL_INICIO.a; calMes = CAL_INICIO.m; }
+        pintarCalendario();
+        calModal.hidden = false;
+        document.body.style.overflow = "hidden";
+        document.getElementById("calListo").focus();
+      }
+
+      /* ---------- Oradores que vienen: se escriben y se pueden agregar más ---------- */
+      var vContOradores = document.getElementById("v-oradores");
+      var vContador = 0;
+
+      function vCrearOrador() {
+        vContador++;
+        var n = vContador;
+        var bloque = document.createElement("div");
+        bloque.className = "panel orador-bloque";
+        bloque.innerHTML =
+          '<div class="cab"><h3>Orador ' + n + '</h3>' +
+          (n > 1 ? '<button type="button" class="btn-quitar">Quitar</button>' : "") +
+          "</div>" +
+          '<div class="campo">' +
+            '<label class="flabel" for="vorador-nombre-' + n + '">Nombre del orador</label>' +
+            '<input type="text" id="vorador-nombre-' + n + '" class="o-nombre" placeholder="Nombre del orador que viene" />' +
+          "</div>" +
+          '<div class="campo">' +
+            '<span class="subtit">Fecha de la visita</span>' +
+            '<button type="button" class="btn-agregar o-fecha-btn">Elegir la fecha</button>' +
+            '<p class="fecha-ayuda">Toque el botón y elija el sábado de la visita en el calendario. Solo se pueden elegir los sábados libres.</p>' +
+            '<p class="fechas-resumen o-fecha-texto">Sin fecha elegida.</p>' +
+          "</div>" +
+          '<div class="campo">' +
+            '<label class="flabel" for="vorador-discurso-' + n + '">Su discurso (número y título)</label>' +
+            '<input type="text" id="vorador-discurso-' + n + '" class="o-discurso" placeholder="Ejemplo: 107 Eduquemos nuestra conciencia" />' +
+          "</div>" +
+          '<div class="campo">' +
+            '<span class="subtit">Canción</span>' +
+            '<label class="flabel" for="vorador-cancion-num-' + n + '">N.º de canción</label>' +
+            '<input type="text" id="vorador-cancion-num-' + n + '" class="o-cancion-num" placeholder="Ejemplo: 132" inputmode="numeric" />' +
+          "</div>" +
+          '<div class="campo">' +
+            '<label class="flabel" for="vorador-cancion-titulo-' + n + '">Título de la canción</label>' +
+            '<input type="text" id="vorador-cancion-titulo-' + n + '" class="o-cancion-titulo" placeholder="Ejemplo: Ahora ya somos uno" />' +
+          "</div>" +
+          '<div class="campo">' +
+            '<label class="flabel" for="vorador-imagen-' + n + '">Imagen <span class="opc">(opcional)</span></label>' +
+            '<input type="file" id="vorador-imagen-' + n + '" class="o-imagen" accept=".jpg,.jpeg,.png,.pdf" />' +
+            '<p class="campo-ayuda">Opcional. Puede subir una imagen en JPG o PNG, o un archivo PDF. El archivo no se envía con este mensaje: solo se anota su nombre abajo y luego se envía la imagen por separado por WhatsApp.</p>' +
+            '<p class="campo-ayuda o-imagen-nombre" hidden></p>' +
+          "</div>" +
+          '<div class="campo">' +
+            '<label class="flabel" for="vorador-wa-' + n + '">WhatsApp del orador <span class="opc">(opcional)</span></label>' +
+            '<input type="tel" id="vorador-wa-' + n + '" class="o-whatsapp" placeholder="Ejemplo: 55 1234 5678" inputmode="tel" autocomplete="tel" />' +
+            '<p class="campo-ayuda">Opcional. Es el número al que le reenviaremos este formulario para que el orador agregue la canción y las imágenes.</p>' +
+          "</div>";
+        vContOradores.appendChild(bloque);
+        bloque.querySelector(".o-fecha-btn").addEventListener("click", function () { vAbrirCalendario(bloque); });
+        var quitar = bloque.querySelector(".btn-quitar");
+        if (quitar) {
+          quitar.addEventListener("click", function () {
+            bloque.remove();
+            vRenumerar();
+          });
+        }
+        bloque.querySelectorAll("input").forEach(function (inp) {
+          inp.addEventListener("input", function () { inp.classList.remove("falta"); });
+        });
+        var fileInput = bloque.querySelector(".o-imagen");
+        var nombreArchivo = bloque.querySelector(".o-imagen-nombre");
+        fileInput.addEventListener("change", function () {
+          var f = fileInput.files && fileInput.files[0];
+          if (f) {
+            nombreArchivo.hidden = false;
+            nombreArchivo.textContent = "Archivo elegido: " + f.name;
+          } else {
+            nombreArchivo.hidden = true;
+            nombreArchivo.textContent = "";
+          }
+        });
+        return bloque;
+      }
+      function vRenumerar() {
+        var bloques = vContOradores.querySelectorAll(".orador-bloque");
+        bloques.forEach(function (b, i) {
+          b.querySelector("h3").textContent = "Orador " + (i + 1);
+        });
+      }
+      vCrearOrador();
+      document.getElementById("v-btnAgregar").addEventListener("click", function () {
+        var b = vCrearOrador();
+        var inp = b.querySelector(".o-nombre");
+        if (inp) inp.focus();
+      });
+
+      function vOradoresCompletos() {
+        var lista = [];
+        vContOradores.querySelectorAll(".orador-bloque").forEach(function (b) {
+          var nombre = b.querySelector(".o-nombre").value.trim();
+          var discurso = b.querySelector(".o-discurso").value.trim();
+          var cancionNum = b.querySelector(".o-cancion-num").value.trim();
+          var cancionTitulo = b.querySelector(".o-cancion-titulo").value.trim();
+          var fileInput = b.querySelector(".o-imagen");
+          var imagen = (fileInput.files && fileInput.files[0]) ? fileInput.files[0].name : "";
+          var whatsapp = b.querySelector(".o-whatsapp").value.trim();
+          var fechaObj = vFechaDeTarjeta(b);
+          if (nombre && discurso && fechaObj) lista.push({ nombre: nombre, discurso: discurso, fecha: fechaObj.texto, cancionNum: cancionNum, cancionTitulo: cancionTitulo, imagen: imagen, whatsapp: whatsapp });
+        });
+        return lista;
+      }
+
+      /* ---------- Enviar ---------- */
+      document.getElementById("v-cong").addEventListener("input", function () { this.classList.remove("falta"); });
+
+      document.getElementById("v-btnEnviar").addEventListener("click", function () {
+        var aviso = document.getElementById("v-avisoFinal");
+        var congInput = document.getElementById("v-cong");
+        var cong = congInput.value.trim();
+        var oradores = vOradoresCompletos();
+
+        // Para enviar se necesita: la congregación y al menos un orador
+        // con nombre, discurso y fecha. Los oradores a medias o vacíos
+        // simplemente no se incluyen y no bloquean el envío.
+        var faltan = [];
+        if (!cong) faltan.push("el nombre de su congregación");
+        var hayNombreDiscurso = false;
+        vContOradores.querySelectorAll(".orador-bloque").forEach(function (b) {
+          var n = b.querySelector(".o-nombre").value.trim();
+          var d = b.querySelector(".o-discurso").value.trim();
+          if (n && d) {
+            hayNombreDiscurso = true;
+            if (!vFechaDeTarjeta(b)) b.querySelector(".o-fecha-texto").classList.add("falta");
+          }
+        });
+        if (!oradores.length) {
+          faltan.push(hayNombreDiscurso ? "la fecha del orador" : "al menos un orador con su nombre, su discurso y su fecha");
+        }
+        congInput.classList.toggle("falta", !cong);
+        if (faltan.length) {
+          aviso.className = "aviso error";
+          aviso.textContent = "Falta: " + faltan.join(", ") + ".";
+          aviso.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+
+        var lineas = [
+          "Congregación: " + cong,
+          "Horario de la reunión: " + HORARIO_FIJO
+        ];
+        oradores.forEach(function (o) {
+          lineas.push("Orador: " + o.nombre);
+          lineas.push("Fecha: " + o.fecha);
+          lineas.push("Discurso: " + o.discurso);
+          if (o.cancionNum || o.cancionTitulo) {
+            var cancion = "Canción:";
+            if (o.cancionNum) cancion += " N.º " + o.cancionNum;
+            if (o.cancionTitulo) cancion += (o.cancionNum ? " — " : " ") + o.cancionTitulo;
+            lineas.push(cancion);
+          }
+          if (o.imagen) lineas.push("Imagen: " + o.imagen + " (enviar por separado por WhatsApp)");
+          if (o.whatsapp) lineas.push("WhatsApp del orador: " + o.whatsapp);
+        });
+        lineas.push("Comuníquese con el orador sólo si es necesario.");
+
+        var mensaje = lineas.join("\n");
+        var url = "https://wa.me/" + WHATSAPP_DESTINO + "?text=" + encodeURIComponent(mensaje);
+
+        aviso.className = "aviso ok";
+        aviso.innerHTML = "<strong>Listo.</strong> Este es el mensaje que llegará por WhatsApp. " +
+          "Si WhatsApp no se abrió solo, toque el botón verde «Abrir WhatsApp y enviar»; " +
+          "o copie el mensaje y péguelo directo en WhatsApp:" +
+          "<pre></pre>" +
+          '<div class="fila"><a class="btn-wa2" target="_blank" rel="noopener" href="' + url + '">Abrir WhatsApp y enviar</a>' +
+          '<button type="button" class="btn-copiar">Copiar mensaje</button></div>';
+        aviso.querySelector("pre").textContent = mensaje;
+        aviso.querySelector(".btn-copiar").addEventListener("click", function () {
+          var b = this;
+          function hecho() { b.textContent = "¡Copiado!"; setTimeout(function () { b.textContent = "Copiar mensaje"; }, 2000); }
+          // Respaldo para archivos descargados o visores donde el
+          // portapapeles moderno no está disponible: textarea + execCommand.
+          function respaldo() {
+            var ta = document.createElement("textarea");
+            ta.value = mensaje;
+            ta.setAttribute("readonly", "");
+            ta.style.position = "fixed";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            ta.setSelectionRange(0, ta.value.length);
+            try { document.execCommand("copy"); } catch (e) { /* sin respaldo */ }
+            document.body.removeChild(ta);
+            hecho();
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(mensaje).then(hecho, respaldo);
+          } else { respaldo(); }
+        });
+        // Si el navegador bloquea la apertura automática (pasa en Safari y
+        // en visores de archivos), se intenta de nuevo con un enlace real;
+        // el botón verde del cuadro queda como camino manual.
+        var ventana = window.open(url, "_blank");
+        if (!ventana) {
+          var enlace = document.createElement("a");
+          enlace.href = url;
+          enlace.target = "_blank";
+          enlace.rel = "noopener";
+          enlace.style.display = "none";
+          document.body.appendChild(enlace);
+          enlace.click();
+          document.body.removeChild(enlace);
+        }
+        aviso.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    </script>
+  </body>
+</html>
