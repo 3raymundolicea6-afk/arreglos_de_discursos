@@ -332,7 +332,13 @@
          arriba. Solo se pueden tocar los sábados futuros y libres
          según V_OCUPADAS; cada tarjeta guarda UNA sola fecha. */
       var MESES_NOM = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-      var DIAS_NOM = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];      var calModal = document.getElementById("calendario");
+      var DIAS_NOM = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+      // Clave numérica de una fecha (año*10000 + (mes+1)*100 + día), igual
+      // que la que usa vClaveAFecha para volver a leerla.
+      function claveFecha(a, m, d) { return a * 10000 + (m + 1) * 100 + d; }
+      function fechaLargaTxt(a, m, d) {
+        return DIAS_NOM[new Date(a, m, d).getDay()] + " " + d + " de " + MESES_NOM[m] + " de " + a;
+      }      var calModal = document.getElementById("calendario");
       var calGrid = document.getElementById("calGrid");
       var calSelMes = document.getElementById("calMesSel");
       var calTitulo = document.getElementById("calTitulo");
