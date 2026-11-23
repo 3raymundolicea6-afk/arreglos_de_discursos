@@ -312,8 +312,15 @@
             <select id="calMesSel" aria-label="Mes y año"></select>
             <button type="button" class="cal-flecha" id="calNext" aria-label="Mes siguiente">›</button>
           </div>
-
-    </div>
+          <div class="cal-semana" aria-hidden="true"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span class="fds">S</span><span class="fds">D</span></div>
+          <div class="cal-grid" id="calGrid"></div>
+          <p class="cal-elegidas" id="calElegidas"></p>
+          <div class="cal-acciones">
+            <button type="button" class="btn-cal-borrar" id="calBorrar">Borrar fechas</button>
+            <button type="button" class="btn-cal-listo" id="calListo">Listo</button>
+          </div>
+        </div>
+      </div>
 
     <script>
       // WhatsApp del encargado de arreglos, al que llegan las solicitudes.
