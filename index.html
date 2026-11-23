@@ -488,16 +488,6 @@
             </div>
           </section>
 
-          <!-- Fecha -->
-          <section aria-labelledby="v-t-fecha">
-            <h2 id="v-t-fecha">Fecha de la visita</h2>
-            <div class="panel">
-              <button type="button" class="btn-agregar" id="v-btnFecha">Elegir la fecha</button>
-              <p class="fecha-ayuda">Toque el botón y elija en el calendario el sábado de la visita. Solo se pueden elegir los sábados libres. Puede elegir varios sábados: se muestran abajo separados por comas.</p>
-              <p class="fechas-resumen" id="v-fechasElegidas" hidden></p>
-            </div>
-          </section>
-
           <!-- Orador que viene -->
           <section aria-labelledby="v-t-orador">
             <h2 id="v-t-orador">Orador que viene</h2>
@@ -754,7 +744,8 @@
       var calBtnPrev = document.getElementById("calPrev");
       var calBtnNext = document.getElementById("calNext");
       var calOrador = null;
-      var calModo = "visita"; // "visita": fecha por orador (formulario 1); "visiten": fecha del formulario (formulario 2)
+      var calTarjeta = null; // tarjeta del formulario 2 que está eligiendo fecha
+      var calModo = "visita"; // "visita": fecha por orador (formulario 1); "visiten": fecha por tarjeta (formulario 2)
       var calAnio = 2026, calMes = 10;
       // Meses que se pueden recorrer: de noviembre de 2026 a diciembre de 2027.
       var CAL_INICIO = { a: 2026, m: 10 }, CAL_FIN = { a: 2027, m: 11 };
@@ -802,7 +793,7 @@
             var tocable = esVisiten
               ? (sem === 6 && fecha >= hoy && !V_OCUPADAS[vFechaValor(calAnio, calMes, dia)])
               : (esFds && fecha >= hoy);
-            var elegido = esVisiten ? !!vFechasSel[clave] : !!fechasSel[calOrador][clave];
+            var elegido = esVisiten ? !!(calTarjeta && calTarjeta.dataset.fechaClave === String(clave)) : !!fechasSel[calOrador][clave];
             var b = document.createElement("button");
             b.type = "button";
             b.className = "cal-dia" + (esFds ? " fds" : "") + (elegido ? " sel" : "");
@@ -814,9 +805,9 @@
             } else {
               b.addEventListener("click", function () {
                 if (esVisiten) {
-                  if (vFechasSel[clave]) delete vFechasSel[clave];
-                  else vFechasSel[clave] = true;
-                  vSincronizarFechas();
+                  // Una sola fecha por tarjeta: tocar otro sábado la cambia.
+                  calTarjeta.dataset.fechaClave = String(clave);
+                  vSincronizarFechaTarjeta(calTarjeta);
                 } else {
                   if (fechasSel[calOrador][clave]) delete fechasSel[calOrador][clave];
                   else fechasSel[calOrador][clave] = true;
@@ -829,9 +820,10 @@
           })(d);
         }
         if (calModo === "visiten") {
-          calElegidas.textContent = vFechasTexto
-            ? "Elegidas: " + vFechasTexto + "."
-            : "Toque un sábado libre para elegirlo. Puede elegir varios sábados.";
+          var fElegida = calTarjeta ? vFechaDeTarjeta(calTarjeta) : null;
+          calElegidas.textContent = fElegida
+            ? "Elegida: " + fElegida.texto + "."
+            : "Toque un sábado libre para elegirlo.";
         } else {
           calElegidas.textContent = fechasTexto[calOrador]
             ? "Elegidas: " + fechasTexto[calOrador] + "."
@@ -865,6 +857,7 @@
         calModal.hidden = true;
         document.body.style.overflow = "";
         calOrador = null;
+        calTarjeta = null;
         calModo = "visita";
       }
       calSelMes.addEventListener("change", function () {
@@ -884,8 +877,10 @@
       document.getElementById("calListo").addEventListener("click", cerrarCalendario);
       document.getElementById("calBorrar").addEventListener("click", function () {
         if (calModo === "visiten") {
-          vFechasSel = {};
-          vSincronizarFechas();
+          if (calTarjeta) {
+            delete calTarjeta.dataset.fechaClave;
+            vSincronizarFechaTarjeta(calTarjeta);
+          }
         } else {
           if (!calOrador) return;
           fechasSel[calOrador] = {};
@@ -1074,11 +1069,10 @@
     <script>
       /* ================================================================
          FORMULARIO 2: QUE NOS VISITEN
-         Reuniones los sábados a las 6:00 de la tarde; quien pide la
-         visita elige la fecha en el calendario (solo sábados libres
-         según V_OCUPADAS) y escribe el orador que viene con su discurso,
-         su canción y, si quiere, una imagen. Todo llega al mismo
-         WhatsApp.
+         Reuniones los sábados a las 6:00 de la tarde; cada orador que
+         viene lleva su propia fecha, elegida en el calendario (solo
+         sábados libres según V_OCUPADAS), con su discurso, su canción
+         y, si quiere, una imagen. Todo llega al mismo WhatsApp.
          ================================================================ */
       var HORARIO_FIJO = "sábados a las 6:00 de la tarde";
 
@@ -1110,46 +1104,41 @@
         "2027-1-13": "Daniel Montiel"
       };
 
-      /* ---------- Fecha de la visita: el mismo calendario del formulario 1 ----------
-         Al tocar «Elegir la fecha» se abre el calendario y ahí se elige
-         el sábado. Solo se pueden tocar los sábados futuros y libres
-         (los de V_OCUPADAS no se pueden tocar). Se pueden elegir varios
-         sábados: se muestran junto al botón separados por comas. */
-      var vFechasSel = {}; // claveFecha (a*10000+(m+1)*100+d) -> true
-      var vFechasTexto = "";
-      var vFechasElegidasEl = document.getElementById("v-fechasElegidas");
-
-      function vListaFechas() {
-        var claves = Object.keys(vFechasSel).map(Number).sort(function (x, y) { return x - y; });
-        return claves.map(function (c) {
-          var a = Math.floor(c / 10000);
-          var resto = c % 10000;
-          var m = Math.floor(resto / 100) - 1;
-          var d = resto % 100;
-          return { valor: vFechaValor(a, m, d), texto: vFechaLarga(a, m, d) };
-        });
+      /* ---------- Fecha de la visita: dentro de cada tarjeta ----------
+         Cada tarjeta de orador tiene su propio botón «Elegir la fecha»
+         que abre el mismo calendario del formulario 1. Solo se pueden
+         tocar los sábados futuros y libres (los de V_OCUPADAS no se
+         pueden tocar). Cada tarjeta guarda UNA sola fecha: al tocar
+         otro sábado se cambia por el nuevo. */
+      function vClaveAFecha(clave) {
+        var c = Number(clave);
+        var a = Math.floor(c / 10000);
+        var resto = c % 10000;
+        var m = Math.floor(resto / 100) - 1;
+        var d = resto % 100;
+        return { valor: vFechaValor(a, m, d), texto: vFechaLarga(a, m, d) };
       }
-      function vSincronizarFechas() {
-        var lista = vListaFechas();
-        vFechasTexto = lista.map(function (f) { return f.texto; }).join(", ");
-        if (!lista.length) {
-          vFechasElegidasEl.hidden = true;
-          vFechasElegidasEl.textContent = "";
-        } else if (lista.length === 1) {
-          vFechasElegidasEl.hidden = false;
-          vFechasElegidasEl.textContent = "Fecha elegida: " + lista[0].texto + ".";
+      function vFechaDeTarjeta(bloque) {
+        var c = bloque.dataset.fechaClave;
+        return c ? vClaveAFecha(c) : null;
+      }
+      function vSincronizarFechaTarjeta(bloque) {
+        var el = bloque.querySelector(".o-fecha-texto");
+        var f = vFechaDeTarjeta(bloque);
+        if (f) {
+          el.textContent = "Fecha: " + f.texto + ".";
+          el.classList.remove("falta");
         } else {
-          vFechasElegidasEl.hidden = false;
-          vFechasElegidasEl.textContent = "Fechas elegidas: " + vFechasTexto + ".";
+          el.textContent = "Sin fecha elegida.";
         }
       }
-      function vAbrirCalendario() {
+      function vAbrirCalendario(bloque) {
         calModo = "visiten";
-        calOrador = null;
+        calTarjeta = bloque;
         calTitulo.textContent = "Elija la fecha de la visita";
-        var claves = Object.keys(vFechasSel).map(Number).sort(function (x, y) { return x - y; });
-        if (claves.length) {
-          var c = claves[0];
+        var clave = bloque.dataset.fechaClave;
+        if (clave) {
+          var c = Number(clave);
           calAnio = Math.floor(c / 10000);
           calMes = Math.floor((c % 10000) / 100) - 1;
         } else {
@@ -1170,7 +1159,6 @@
         document.body.style.overflow = "hidden";
         document.getElementById("calListo").focus();
       }
-      document.getElementById("v-btnFecha").addEventListener("click", vAbrirCalendario);
 
       /* ---------- Oradores que vienen: se escriben y se pueden agregar más ---------- */
       var vContOradores = document.getElementById("v-oradores");
@@ -1194,6 +1182,12 @@
             '<input type="text" id="vorador-discurso-' + n + '" class="o-discurso" placeholder="Ejemplo: 107 Eduquemos nuestra conciencia" />' +
           "</div>" +
           '<div class="campo">' +
+            '<span class="subtit">Fecha de la visita</span>' +
+            '<button type="button" class="btn-agregar o-fecha-btn">Elegir la fecha</button>' +
+            '<p class="fecha-ayuda">Toque el botón y elija el sábado de la visita en el calendario. Solo se pueden elegir los sábados libres.</p>' +
+            '<p class="fechas-resumen o-fecha-texto">Sin fecha elegida.</p>' +
+          "</div>" +
+          '<div class="campo">' +
             '<span class="subtit">Canción</span>' +
             '<label class="flabel" for="vorador-cancion-num-' + n + '">N.º de canción</label>' +
             '<input type="text" id="vorador-cancion-num-' + n + '" class="o-cancion-num" placeholder="Ejemplo: 132" inputmode="numeric" />' +
@@ -1209,6 +1203,7 @@
             '<p class="campo-ayuda o-imagen-nombre" hidden></p>' +
           "</div>";
         vContOradores.appendChild(bloque);
+        bloque.querySelector(".o-fecha-btn").addEventListener("click", function () { vAbrirCalendario(bloque); });
         var quitar = bloque.querySelector(".btn-quitar");
         if (quitar) {
           quitar.addEventListener("click", function () {
@@ -1255,7 +1250,8 @@
           var cancionTitulo = b.querySelector(".o-cancion-titulo").value.trim();
           var fileInput = b.querySelector(".o-imagen");
           var imagen = (fileInput.files && fileInput.files[0]) ? fileInput.files[0].name : "";
-          if (nombre && discurso) lista.push({ nombre: nombre, discurso: discurso, cancionNum: cancionNum, cancionTitulo: cancionTitulo, imagen: imagen });
+          var fechaObj = vFechaDeTarjeta(b);
+          if (nombre && discurso && fechaObj) lista.push({ nombre: nombre, discurso: discurso, fecha: fechaObj.texto, cancionNum: cancionNum, cancionTitulo: cancionTitulo, imagen: imagen });
         });
         return lista;
       }
@@ -1267,16 +1263,25 @@
         var aviso = document.getElementById("v-avisoFinal");
         var congInput = document.getElementById("v-cong");
         var cong = congInput.value.trim();
-        var fechas = vListaFechas();
         var oradores = vOradoresCompletos();
 
-        // Para enviar se necesita: la congregación, al menos una fecha y al
-        // menos un orador con su discurso. Los oradores a medias o vacíos
+        // Para enviar se necesita: la congregación y al menos un orador
+        // con nombre, discurso y fecha. Los oradores a medias o vacíos
         // simplemente no se incluyen y no bloquean el envío.
         var faltan = [];
         if (!cong) faltan.push("el nombre de su congregación");
-        if (!fechas.length) faltan.push("al menos una fecha");
-        if (!oradores.length) faltan.push("al menos un orador con su discurso");
+        var hayNombreDiscurso = false;
+        vContOradores.querySelectorAll(".orador-bloque").forEach(function (b) {
+          var n = b.querySelector(".o-nombre").value.trim();
+          var d = b.querySelector(".o-discurso").value.trim();
+          if (n && d) {
+            hayNombreDiscurso = true;
+            if (!vFechaDeTarjeta(b)) b.querySelector(".o-fecha-texto").classList.add("falta");
+          }
+        });
+        if (!oradores.length) {
+          faltan.push(hayNombreDiscurso ? "la fecha del orador" : "al menos un orador con su nombre, su discurso y su fecha");
+        }
         congInput.classList.toggle("falta", !cong);
         if (faltan.length) {
           aviso.className = "aviso error";
@@ -1289,15 +1294,10 @@
           "Congregación: " + cong,
           "Horario de la reunión: " + HORARIO_FIJO
         ];
-        if (fechas.length === 1) {
-          lineas.push("Fecha: " + fechas[0].texto);
-        } else {
-          lineas.push("Fechas:");
-          fechas.forEach(function (f) { lineas.push("- " + f.texto); });
-        }
         oradores.forEach(function (o) {
           lineas.push("Orador: " + o.nombre);
           lineas.push("Discurso: " + o.discurso);
+          lineas.push("Fecha: " + o.fecha);
           if (o.cancionNum || o.cancionTitulo) {
             var cancion = "Canción:";
             if (o.cancionNum) cancion += " N.º " + o.cancionNum;
