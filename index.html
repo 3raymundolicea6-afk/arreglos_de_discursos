@@ -1178,14 +1178,14 @@
             '<input type="text" id="vorador-nombre-' + n + '" class="o-nombre" placeholder="Nombre del orador que viene" />' +
           "</div>" +
           '<div class="campo">' +
-            '<label class="flabel" for="vorador-discurso-' + n + '">Su discurso (número y título)</label>' +
-            '<input type="text" id="vorador-discurso-' + n + '" class="o-discurso" placeholder="Ejemplo: 107 Eduquemos nuestra conciencia" />' +
-          "</div>" +
-          '<div class="campo">' +
             '<span class="subtit">Fecha de la visita</span>' +
             '<button type="button" class="btn-agregar o-fecha-btn">Elegir la fecha</button>' +
             '<p class="fecha-ayuda">Toque el botón y elija el sábado de la visita en el calendario. Solo se pueden elegir los sábados libres.</p>' +
             '<p class="fechas-resumen o-fecha-texto">Sin fecha elegida.</p>' +
+          "</div>" +
+          '<div class="campo">' +
+            '<label class="flabel" for="vorador-discurso-' + n + '">Su discurso (número y título)</label>' +
+            '<input type="text" id="vorador-discurso-' + n + '" class="o-discurso" placeholder="Ejemplo: 107 Eduquemos nuestra conciencia" />' +
           "</div>" +
           '<div class="campo">' +
             '<span class="subtit">Canción</span>' +
@@ -1296,8 +1296,8 @@
         ];
         oradores.forEach(function (o) {
           lineas.push("Orador: " + o.nombre);
-          lineas.push("Discurso: " + o.discurso);
           lineas.push("Fecha: " + o.fecha);
+          lineas.push("Discurso: " + o.discurso);
           if (o.cancionNum || o.cancionTitulo) {
             var cancion = "Canción:";
             if (o.cancionNum) cancion += " N.º " + o.cancionNum;
