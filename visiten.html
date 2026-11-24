@@ -764,9 +764,42 @@
         var yaSono = false;
         var reintento = null;
         var autoIntentos = 0;
+        var escuchando = false;
+        var EVENTOS = ["pointerdown", "touchstart", "touchend", "click", "scroll", "wheel", "keydown"];
+        function poner() {
+          if (escuchando) return;
+          escuchando = true;
+          EVENTOS.forEach(function (ev) {
+            window.addEventListener(ev, intentar, true);
+          });
+        }
+        function quitar() {
+          escuchando = false;
+          EVENTOS.forEach(function (ev) {
+            window.removeEventListener(ev, intentar, true);
+          });
+          if (reintento) { clearTimeout(reintento); reintento = null; }
+        }
+        // Volver a armar: cuando la página vuelve a mostrarse (volver
+        // atrás, cambiar de pestaña, o volver a tocar la liga y que el
+        // navegador muestre la pestaña que ya estaba abierta), la guía
+        // debe poder sonar otra vez. Sin esto, después de sonar una vez
+        // la página ya no volvía a hablar.
+        function rearmar() {
+          if (!audio || !audio.paused) return;
+          yaSono = false;
+          autoIntentos = 0;
+          poner();
+        }
+        document.addEventListener("visibilitychange", function () {
+          if (!document.hidden) rearmar();
+        });
+        window.addEventListener("pageshow", rearmar);
+        window.addEventListener("focus", rearmar);
         function intentar(desdeEvento) {
-          if (yaSono || !audio) return;
+          if (yaSono || !audio || !audio.paused) return;
           if (desdeEvento) autoIntentos = 0;
+          try { audio.currentTime = 0; } catch (e) {}
           var p;
           try {
             p = audio.play();
@@ -798,15 +831,7 @@
             quitar();
           }
         }
-        function quitar() {
-          ["pointerdown", "touchstart", "touchend", "click", "scroll", "wheel", "keydown"].forEach(function (ev) {
-            window.removeEventListener(ev, intentar, true);
-          });
-          if (reintento) { clearTimeout(reintento); reintento = null; }
-        }
-        ["pointerdown", "touchstart", "touchend", "click", "scroll", "wheel", "keydown"].forEach(function (ev) {
-          window.addEventListener(ev, intentar, true);
-        });
+        poner();
       })();
     </script>
   </body>
