@@ -762,18 +762,36 @@
       (function () {
         var audio = document.getElementById("audioGuia");
         var yaSono = false;
-        function intentar() {
+        var reintento = null;
+        var autoIntentos = 0;
+        function intentar(desdeEvento) {
           if (yaSono || !audio) return;
-          var p = audio.play();
+          if (desdeEvento) autoIntentos = 0;
+          var p;
+          try {
+            p = audio.play();
+          } catch (e) {
+            // No se pudo ni intentar: se sigue esperando el siguiente toque.
+            return;
+          }
           if (p && p.then) {
             p.then(function () {
               yaSono = true;
               quitar();
-            }, function (err) {
-              // El navegador todavía no permite sonido: se sigue
-              // esperando el siguiente toque o desplazamiento. Si el
-              // error es de otro tipo, no se insiste.
-              if (!err || err.name !== "NotAllowedError") quitar();
+            }, function () {
+              // Falló esta vez (permiso, audio aún cargando, etc.): NO se
+              // quitan los oyentes; el siguiente toque o desplazamiento
+              // lo vuelve a intentar. Además se reintenta solo 1 s
+              // después, hasta 5 veces, por si el fallo fue transitorio.
+              if (autoIntentos < 5) {
+                autoIntentos++;
+                if (!reintento) {
+                  reintento = setTimeout(function () {
+                    reintento = null;
+                    intentar(false);
+                  }, 1000);
+                }
+              }
             });
           } else {
             yaSono = true;
@@ -781,11 +799,12 @@
           }
         }
         function quitar() {
-          ["pointerdown", "touchstart", "click", "scroll", "wheel", "keydown"].forEach(function (ev) {
+          ["pointerdown", "touchstart", "touchend", "click", "scroll", "wheel", "keydown"].forEach(function (ev) {
             window.removeEventListener(ev, intentar, true);
           });
+          if (reintento) { clearTimeout(reintento); reintento = null; }
         }
-        ["pointerdown", "touchstart", "click", "scroll", "wheel", "keydown"].forEach(function (ev) {
+        ["pointerdown", "touchstart", "touchend", "click", "scroll", "wheel", "keydown"].forEach(function (ev) {
           window.addEventListener(ev, intentar, true);
         });
       })();
